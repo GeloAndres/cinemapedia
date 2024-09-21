@@ -1,6 +1,8 @@
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
+import 'package:flutter/material.dart';
+import '';
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 import 'package:cinemapedia/presentation/widgets/shared/custom_appbard.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -38,17 +40,7 @@ class _HomeViewState extends ConsumerState {
     return Column(
       children: [
         const CustomAppbard(),
-        Expanded(
-          child: ListView.builder(
-            itemCount: nowPlayingMovie.length,
-            itemBuilder: (context, index) {
-              final movie = nowPlayingMovie[index];
-              return ListTile(
-                title: Text(movie.title),
-              );
-            },
-          ),
-        )
+        MoviesSlidershow(movie: nowPlayingMovie)
       ],
     );
   }
