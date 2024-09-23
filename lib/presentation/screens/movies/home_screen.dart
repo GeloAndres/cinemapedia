@@ -37,17 +37,51 @@ class _HomeViewState extends ConsumerState {
     //if (nowPlayingMovie.isEmpty) return const CircularProgressIndicator();
     final movieSliderProvider = ref.watch(moviesSlideShowProvider);
 
-    return Column(
-      children: [
-        const CustomAppbard(),
-        MoviesSlidershow(movie: movieSliderProvider),
-        MovieHorizontalListview(
-          movies: nowPlayingMovie,
-          title: 'En Cines',
-          subTitle: 'Domingo 22',
-          loadNextPage:
-              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
-        )
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppbard(),
+          ),
+        ),
+        SliverList(delegate: SliverChildBuilderDelegate((context, index) {
+          return Column(
+            children: [
+              MoviesSlidershow(movie: movieSliderProvider),
+              MovieHorizontalListview(
+                movies: nowPlayingMovie,
+                title: 'En Cines',
+                subTitle: 'Domingo 22',
+                loadNextPage:
+                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
+              ),
+              MovieHorizontalListview(
+                movies: nowPlayingMovie,
+                title: 'Proximamente',
+                subTitle: 'En este mes',
+                loadNextPage:
+                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
+              ),
+              MovieHorizontalListview(
+                movies: nowPlayingMovie,
+                title: 'Populares',
+                loadNextPage:
+                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
+              ),
+              MovieHorizontalListview(
+                movies: nowPlayingMovie,
+                title: 'Mejores calificadas',
+                subTitle: 'Desde los inicios',
+                loadNextPage:
+                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
+          );
+        })),
       ],
     );
   }
