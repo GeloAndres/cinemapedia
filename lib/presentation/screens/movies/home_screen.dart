@@ -29,13 +29,18 @@ class _HomeViewState extends ConsumerState {
     super.initState();
 
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(upComingMovieProvier.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
     final nowPlayingMovie = ref.watch(nowPlayingMoviesProvider);
-    //if (nowPlayingMovie.isEmpty) return const CircularProgressIndicator();
     final movieSliderProvider = ref.watch(moviesSlideShowProvider);
+    final popularProvider = ref.watch(popularMoviesProvider);
+    final upComingProvier = ref.watch(upComingMovieProvier);
+    final topRatedProvider = ref.watch(topRatedMoviesProvider);
 
     return CustomScrollView(
       slivers: [
@@ -45,7 +50,8 @@ class _HomeViewState extends ConsumerState {
             title: CustomAppbard(),
           ),
         ),
-        SliverList(delegate: SliverChildBuilderDelegate((context, index) {
+        SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
           return Column(
             children: [
               MoviesSlidershow(movie: movieSliderProvider),
@@ -57,31 +63,31 @@ class _HomeViewState extends ConsumerState {
                     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
               ),
               MovieHorizontalListview(
-                movies: nowPlayingMovie,
+                movies: upComingProvier,
                 title: 'Proximamente',
                 subTitle: 'En este mes',
                 loadNextPage:
-                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
+                    ref.read(upComingMovieProvier.notifier).loadNextPage,
               ),
               MovieHorizontalListview(
-                movies: nowPlayingMovie,
+                movies: popularProvider,
                 title: 'Populares',
                 loadNextPage:
-                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
+                    ref.read(popularMoviesProvider.notifier).loadNextPage,
               ),
               MovieHorizontalListview(
-                movies: nowPlayingMovie,
+                movies: topRatedProvider,
                 title: 'Mejores calificadas',
                 subTitle: 'Desde los inicios',
                 loadNextPage:
-                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage,
+                    ref.read(topRatedMoviesProvider.notifier).loadNextPage,
               ),
               const SizedBox(
                 height: 10,
               )
             ],
           );
-        })),
+        }, childCount: 1)),
       ],
     );
   }
