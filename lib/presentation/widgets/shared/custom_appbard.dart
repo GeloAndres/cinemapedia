@@ -1,3 +1,4 @@
+import 'package:cinemapedia/domain/entities/entities.dart';
 import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +22,21 @@ class CustomAppbard extends ConsumerWidget {
               const SizedBox(
                 width: 5,
               ),
-              Text('Cinemapedia', style: titleStyle),
+              Text('Todo Moviepedia', style: titleStyle),
               const Spacer(),
               IconButton(
                   onPressed: () {
-                    final movieRespository = ref.read(moviesRepositoryProvider);
+                    final searchedMovies = ref.read(searchedMoviesProviders);
+                    final searchQuery = ref.read(searchQueryProvider);
 
-                    showSearch(
+                    showSearch<Movie?>(
+                        query: searchQuery,
                         context: context,
                         delegate: SearchMovieDelegate(
-                            searchMovies: movieRespository.searchMovies));
+                            initialMovies: searchedMovies,
+                            searchMovies: ref
+                                .read(searchedMoviesProviders.notifier)
+                                .searchMoviesByQuery));
                   },
                   icon: const Icon(Icons.search))
             ],

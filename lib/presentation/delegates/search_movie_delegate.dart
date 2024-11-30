@@ -9,26 +9,40 @@ typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMoviesCallback searchMovies;
+  List<Movie> initialMovies;
+
   Timer? _debounceTimer;
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
 
-  SearchMovieDelegate({required this.searchMovies});
+  SearchMovieDelegate(
+      {required this.searchMovies, required this.initialMovies});
 
   void clearStreams() {
     debouncedMovies.close();
+  }
+
+  Widget buildResultsAndSuggestions() {
+    return StreamBuilder(
+        initialData: initialMovies,
+        stream: debouncedMovies.stream,
+        builder: (context, snapshot) {
+          final movies = snapshot.data ?? [];
+
+          return ListView.builder(
+            itemCount: movies.length,
+            itemBuilder: (context, index) => _MovieSeachItem(
+              movie: movies[index],
+            ),
+          );
+        });
   }
 
   void _onQuerychaged(String query) {
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      //TODO: buscar peliculas y emitir al stream
-      if (query.isEmpty) {
-        debouncedMovies.add([]);
-        return;
-      }
-
       final movies = await searchMovies(query);
+      initialMovies = movies;
       debouncedMovies.add(movies);
     });
   }
@@ -58,25 +72,14 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Text('buildResults');
+    _onQuerychaged(query);
+    return buildResultsAndSuggestions();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     _onQuerychaged(query);
-    return StreamBuilder(
-        // future: searchMovies(query),
-        stream: debouncedMovies.stream,
-        builder: (context, snapshot) {
-          final movies = snapshot.data ?? [];
-
-          return ListView.builder(
-            itemCount: movies.length,
-            itemBuilder: (context, index) => _MovieSeachItem(
-              movie: movies[index],
-            ),
-          );
-        });
+    return buildResultsAndSuggestions();
   }
 }
 
