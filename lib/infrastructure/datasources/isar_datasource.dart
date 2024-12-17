@@ -9,6 +9,7 @@ class IsarDatasource extends LocalStorageDatasource {
   IsarDatasource() {
     db = openDB();
   }
+
   Future<Isar> openDB() async {
     final dir = await getApplicationDocumentsDirectory();
 
@@ -35,11 +36,11 @@ class IsarDatasource extends LocalStorageDatasource {
     final isar = await db;
 
     final favoriteMovie =
-        await isar.movies.filter().idEqualTo(movie.id).findFirstSync();
+        await isar.movies.filter().idEqualTo(movie.id).findFirst();
 
     if (favoriteMovie != null) {
       //borrar
-      isar.writeTxnSync(() => isar.movies.delete(favoriteMovie.isarId!));
+      isar.writeTxnSync(() => isar.movies.deleteSync(favoriteMovie.isarId!));
       return;
     }
 
