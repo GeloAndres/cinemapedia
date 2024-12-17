@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 
-import 'package:cinemapedia/domain/entities/entities.dart';
+import 'package:cinemapedia/domain/entities/movie.dart';
 
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
@@ -65,6 +65,17 @@ class _CustomSliverAppBar extends StatelessWidget {
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
+      actions: [
+        IconButton(
+          onPressed: () {
+            //TODO: realizar toggle
+          },
+          icon: const Icon(
+            Icons.favorite_border,
+          ),
+          // icon: const Icon(Icons.favorite,color: Colors.red),
+        )
+      ],
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -81,23 +92,24 @@ class _CustomSliverAppBar extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox.expand(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [0.7, 1.0],
-                          colors: [Colors.transparent, Colors.black87]))),
+            //gradiente 1
+            const _CustomerGRadiente(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stop: [0.8, 1.0],
+              colors: [Colors.transparent, Colors.black87],
             ),
-            const SizedBox.expand(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          stops: [0.0, 0.3],
-                          colors: [Colors.black87, Colors.transparent]))),
-            )
+            //gradiente 2
+            const _CustomerGRadiente(
+                begin: Alignment.topLeft,
+                stop: [0.0, 0.3],
+                colors: [Colors.black87, Colors.transparent]),
+            // gradiente 3
+            const _CustomerGRadiente(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stop: [0.0, 0.4],
+                colors: [Colors.black54, Colors.transparent]),
           ],
         ),
       ),
@@ -192,7 +204,7 @@ class _ActorsByMovie extends ConsumerWidget {
     if (actorsByMovie[movieID] == null) {
       return Center(
         child: Container(
-            margin: EdgeInsets.only(bottom: 200, top: 150),
+            margin: const EdgeInsets.only(bottom: 200, top: 150),
             height: 100,
             width: 100,
             child: const CircularProgressIndicator(
@@ -238,6 +250,30 @@ class _ActorsByMovie extends ConsumerWidget {
               ),
             );
           }),
+    );
+  }
+}
+
+//optimizacion imagen y gradiente
+class _CustomerGRadiente extends StatelessWidget {
+  final AlignmentGeometry begin;
+  final AlignmentGeometry end;
+  final List<double> stop;
+  final List<Color> colors;
+
+  const _CustomerGRadiente(
+      {this.begin = Alignment.centerLeft,
+      this.end = Alignment.centerRight,
+      required this.stop,
+      required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: DecoratedBox(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: begin, end: end, stops: stop, colors: colors))),
     );
   }
 }
