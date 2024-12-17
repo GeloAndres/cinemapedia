@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CategoriScreen extends StatelessWidget {
-  static const name = 'categori-screen';
-
-  const CategoriScreen({super.key});
+class CategoriView extends StatelessWidget {
+  const CategoriView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +9,8 @@ class CategoriScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Categorias'),
       ),
-      body: const Placeholder(
-        child: Text('Gelonzio'),
+      body: const Center(
+        child: Text('Cuerpo de mi Categorias'),
       ),
     );
   }

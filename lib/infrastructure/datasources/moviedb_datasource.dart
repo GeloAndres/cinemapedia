@@ -1,5 +1,5 @@
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
-import 'package:cinemapedia/domain/entities/entities.dart';
+import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:dio/dio.dart';
