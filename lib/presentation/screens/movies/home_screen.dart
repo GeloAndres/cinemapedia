@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   final viewRouters = const <Widget>[
     HomeView(),
-    CategoriView(),
+    PopularityView(),
     FavoritesView(),
   ];
   @override

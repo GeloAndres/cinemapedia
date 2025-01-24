@@ -26,7 +26,7 @@ final appRouter = GoRouter(initialLocation: '/home/0', routes: [
       ]),
   GoRoute(
     path: '/categoriScreen',
-    builder: (context, state) => const CategoriView(),
+    builder: (context, state) => const PopularityView(),
   ),
   GoRoute(
     path: '/favoriteScreen',
