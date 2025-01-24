@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'package:cinemapedia/domain/entities/movie.dart';
 
@@ -171,6 +172,14 @@ class _CustomerMovieSlver extends StatelessWidget {
                     ),
                     Text(
                       movie.overview,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'Fecha de estreno: ${movie.releaseDate.day.toString()}/${movie.releaseDate.month}/${movie.releaseDate.year}',
+                      style:
+                          const TextStyle(fontSize: 15, color: Colors.black54),
                     )
                   ],
                 ),
@@ -181,27 +190,34 @@ class _CustomerMovieSlver extends StatelessWidget {
         // Genero de la pelicula
         Padding(
           padding: const EdgeInsets.all(8),
-          child: Wrap(
-            children: [
-              ...movie.genreIds.map((gender) => Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: Chip(
-                      label: Text(gender),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                  ))
-            ],
+          child: Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                ...movie.genreIds.map((gender) => Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: Chip(
+                        label: Text(gender),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                    ))
+              ],
+            ),
           ),
         ),
-
-        //TODO: agregar actores
         const SizedBox(
           height: 10,
         ),
         _ActorsByMovie(
           movieID: movie.id.toString(),
+        ),
+        //TODO: agregar video del trailer
+        VideoCustomer(),
+        SizedBox(
+          height: 120,
         )
+        //TODO: recomemdados
       ],
     );
   }
@@ -259,7 +275,7 @@ class _ActorsByMovie extends ConsumerWidget {
                       maxLines: 2,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          overflow: TextOverflow.ellipsis))
+                          overflow: TextOverflow.ellipsis)),
                 ],
               ),
             );
@@ -288,6 +304,66 @@ class _CustomerGRadiente extends StatelessWidget {
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: begin, end: end, stops: stop, colors: colors))),
+    );
+  }
+}
+
+class VideoCustomer extends StatefulWidget {
+  const VideoCustomer({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _VideoCustomerState();
+}
+
+class _VideoCustomerState extends State<VideoCustomer> {
+  late YoutubePlayerController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = YoutubePlayerController(
+      initialVideoId: 'iWFkXUVeKFM',
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+  }
+
+  @override
+  void deactivate() {
+    controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        key: UniqueKey(),
+        controller: controller,
+        showVideoProgressIndicator: true,
+        progressIndicatorColor: Colors.blueAccent,
+        onReady: () {
+          print('Reproductor listo.');
+        },
+      ),
+      builder: (context, player) {
+        return Column(
+          children: [
+            const Text(
+              "Video",
+              style: TextStyle(fontSize: 18),
+            ),
+            player,
+          ],
+        );
+      },
     );
   }
 }
