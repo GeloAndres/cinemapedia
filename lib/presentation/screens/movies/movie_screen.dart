@@ -1,3 +1,4 @@
+import 'package:cinemapedia/presentation/widgets/movies/movie_horizontal_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
@@ -187,7 +188,6 @@ class _CustomerMovieSlver extends StatelessWidget {
             ],
           ),
         ),
-        // Genero de la pelicula
         Padding(
           padding: const EdgeInsets.all(8),
           child: Center(
@@ -212,12 +212,23 @@ class _CustomerMovieSlver extends StatelessWidget {
         _ActorsByMovie(
           movieID: movie.id.toString(),
         ),
-        //TODO: agregar video del trailer
-        VideoCustomer(),
-        SizedBox(
-          height: 120,
+        const VideoCustomer(),
+        const SizedBox(
+          height: 30,
+        ),
+        const Text(
+          'Recomendaciones',
+          style: TextStyle(fontSize: 20),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        ListRecommendation(
+          movieId: movie.id,
+        ),
+        const SizedBox(
+          height: 100,
         )
-        //TODO: recomemdados
       ],
     );
   }
@@ -365,5 +376,34 @@ class _VideoCustomerState extends State<VideoCustomer> {
         );
       },
     );
+  }
+}
+
+class ListRecommendation extends ConsumerWidget {
+  final int movieId;
+  const ListRecommendation({super.key, required this.movieId});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    {
+      final movieFuture = ref
+          .watch(moviesRepositoryProvider)
+          .getMovieRecommendation(movieId.toString());
+
+      return FutureBuilder<List<Movie>>(
+        future: movieFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            return MovieHorizontalListview(movies: snapshot.data!);
+          } else {
+            return const Center(child: Text('No movies found.'));
+          }
+        },
+      );
+    }
   }
 }

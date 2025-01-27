@@ -5,6 +5,7 @@ import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_responsed.dart';
+import 'package:flutter/material.dart';
 
 class MoviedbDatasource extends MoviesDatasource {
   final dio = Dio(BaseOptions(
@@ -70,6 +71,16 @@ class MoviedbDatasource extends MoviesDatasource {
     if (query.isEmpty) return [];
     final response =
         await dio.get('/search/movie', queryParameters: {'query': query});
+
+    return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<List<Movie>> getMovieRecommendation(String movieId) async {
+    if (movieId.isEmpty) {
+      print('no hay id');
+    }
+    final response = await dio.get('movie/$movieId/recommendations');
 
     return _jsonToMovies(response.data);
   }
