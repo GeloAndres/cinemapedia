@@ -1,3 +1,4 @@
+import 'package:cinemapedia/infrastructure/models/moviedb/video_movie.dart';
 import 'package:dio/dio.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
@@ -5,7 +6,6 @@ import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_responsed.dart';
-import 'package:flutter/material.dart';
 
 class MoviedbDatasource extends MoviesDatasource {
   final dio = Dio(BaseOptions(
@@ -83,5 +83,18 @@ class MoviedbDatasource extends MoviesDatasource {
     final response = await dio.get('movie/$movieId/recommendations');
 
     return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<String> fetchVideo(String id) async {
+    final response =
+        await dio.get('https://api.themoviedb.org/3/movie/$id/videos');
+
+    final listVideo = VideoMovie.fromJson(response.data);
+    final videoModel = listVideo.results.firstWhere((video) {
+      return video.type == "Trailer";
+    });
+
+    return videoModel.key;
   }
 }

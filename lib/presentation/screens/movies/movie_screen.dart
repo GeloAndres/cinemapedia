@@ -1,12 +1,11 @@
-import 'package:cinemapedia/presentation/widgets/movies/movie_horizontal_listview.dart';
+import 'package:cinemapedia/presentation/providers/movies/movie_video_youtube_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
-
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/movies/movie_horizontal_listview.dart';
+import 'package:cinemapedia/presentation/widgets/shared/customer_youtube_video.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   static const name = 'movie-screen';
@@ -61,6 +60,12 @@ final isFavoriteProvider = FutureProvider.family.autoDispose(
     return localStorageDatasource.isMovieFavorite(movieId);
   },
 );
+final idVideoYoutubeForMovie = FutureProvider.family.autoDispose(
+  (ref, String movieId) {
+    final responseProvider = ref.watch(moviesRepositoryProvider);
+    return responseProvider.fetchVideo(movieId);
+  },
+); //TODO: analizar si sirve o no
 
 class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
@@ -133,15 +138,16 @@ class _CustomSliverAppBar extends ConsumerWidget {
   }
 }
 
-class _CustomerMovieSlver extends StatelessWidget {
+class _CustomerMovieSlver extends ConsumerWidget {
   final Movie movie;
 
   const _CustomerMovieSlver({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final size = MediaQuery.of(context).size;
     final textstyle = Theme.of(context).textTheme;
+    final idVideo = ref.watch(videoProvider(movie.id.toString()));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +218,18 @@ class _CustomerMovieSlver extends StatelessWidget {
         _ActorsByMovie(
           movieID: movie.id.toString(),
         ),
-        const VideoCustomer(),
+        FutureBuilder<String>(
+          future: idVideo,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text("Error: ${snapshot.error}");
+            } else {
+              return VideoCustomer(videoId: snapshot.data!);
+            }
+          },
+        ),
         const SizedBox(
           height: 30,
         ),
@@ -315,66 +332,6 @@ class _CustomerGRadiente extends StatelessWidget {
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: begin, end: end, stops: stop, colors: colors))),
-    );
-  }
-}
-
-class VideoCustomer extends StatefulWidget {
-  const VideoCustomer({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _VideoCustomerState();
-}
-
-class _VideoCustomerState extends State<VideoCustomer> {
-  late YoutubePlayerController controller;
-  @override
-  void initState() {
-    super.initState();
-    controller = YoutubePlayerController(
-      initialVideoId: 'iWFkXUVeKFM',
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
-        mute: false,
-      ),
-    );
-  }
-
-  @override
-  void deactivate() {
-    controller.pause();
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        key: UniqueKey(),
-        controller: controller,
-        showVideoProgressIndicator: true,
-        progressIndicatorColor: Colors.blueAccent,
-        onReady: () {
-          print('Reproductor listo.');
-        },
-      ),
-      builder: (context, player) {
-        return Column(
-          children: [
-            const Text(
-              "Video",
-              style: TextStyle(fontSize: 18),
-            ),
-            player,
-          ],
-        );
-      },
     );
   }
 }
