@@ -8,7 +8,7 @@ Cinemapedia
 flutter pub run build_runner build
 ```
 
-PRO
+PROD
 
 ```
 dart run flutter_launcher_icons
