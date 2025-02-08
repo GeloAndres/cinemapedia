@@ -1,7 +1,6 @@
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/domain/repositories/movie_repository.dart';
-import 'package:flutter/cupertino.dart';
 
 class MovieRepositoryImpl extends MovieRepository {
   final MoviesDatasource datasource;

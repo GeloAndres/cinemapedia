@@ -17,8 +17,9 @@ class ActorMovidbDatasource extends ActorsDatasource {
   Future<List<Actor>> getActorsByMovie(String movieId) async {
     final response = await dio.get('movie/$movieId/credits');
 
-    if (response.statusCode != 200)
+    if (response.statusCode != 200) {
       Exception('Movie with id: $movieId not found');
+    }
 
     final castResponse = CreditsResponse.fromJson(response.data);
 

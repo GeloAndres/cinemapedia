@@ -11,6 +11,8 @@ final initialLoadingProvider = Provider<bool>((ref) {
   if (movieSliderProvider ||
       popularProvider ||
       upComingProvier ||
-      topRatedProvider) return true;
+      topRatedProvider) {
+    return true;
+  }
   return false;
 });
