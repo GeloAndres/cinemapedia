@@ -10,8 +10,14 @@ flutter pub run build_runner build
 
 PROD
 
+para cambiar el icon
 ```
 dart run flutter_launcher_icons
+```
+
+android AAB
+```
+flutter build appbundle
 ```
 
 Cinemapedia es una aplicación que reúne una amplia base de datos con información detallada sobre películas de todo el mundo. Diseñada para los amantes del cine, esta aplicación permite buscar cualquier película y obtener información esencial de manera rápida y sencilla.

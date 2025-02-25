@@ -22,7 +22,7 @@ class CustomAppbard extends ConsumerWidget {
               const SizedBox(
                 width: 5,
               ),
-              Text('Todo Moviepedia', style: titleStyle),
+              Text('Moviepedia', style: titleStyle),
               const Spacer(),
               IconButton(
                   onPressed: () {

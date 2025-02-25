@@ -224,7 +224,26 @@ class _CustomerMovieSlver extends ConsumerWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
-              return Text("Error: ${snapshot.error}");
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.movie,
+                      size: 60,
+                    ),
+                    Text(
+                      'No tenemos el trailer',
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    const Text(
+                      'estamos en busca de ello :)',
+                      style: TextStyle(fontSize: 20, color: Colors.black45),
+                    )
+                  ],
+                ),
+              );
             } else {
               return VideoCustomer(videoId: snapshot.data!);
             }
